@@ -1032,15 +1032,19 @@ def _assert_has_capability(module, func):
                                    'pip install git+git://github.com/Theano/Theano.git --upgrade --no-deps')
 
 
-def elu(x, alpha=1.0):
+def elu(x, alpha=1.0, max_value=None):
     """ Exponential linear unit
 
     # Arguments
         x: Tensor to compute the activation function for.
         alpha: scalar
+        max_value: saturation threshold.
     """
     _assert_has_capability(T.nnet, 'elu')
-    return T.nnet.elu(x, alpha)
+    x = T.nnet.elu(x, alpha)
+    if max_value is not None:
+        x = T.minimum(x, max_value)
+    return x
 
 
 def relu(x, alpha=0., max_value=None):

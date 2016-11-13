@@ -1392,18 +1392,20 @@ def relu(x, alpha=0., max_value=None):
     return x
 
 
-def elu(x, alpha=1.):
+def elu(x, alpha=1.0, max_value=None):
     '''Exponential linear unit.
 
     # Arguments
         x: Tensor to compute the activation function for.
         alpha: scalar
+        max_value: saturation threshold.
     '''
     res = tf.nn.elu(x)
-    if alpha == 1:
-        return res
-    else:
-        return tf.select(x > 0, res, alpha * res)
+    if alpha != 1.0:
+        res = tf.select(x > 0, res, alpha * res)
+    if max_value is not None:
+        res = minimum(res, max_value)
+    return res
 
 
 def softmax(x):
