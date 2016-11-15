@@ -3,18 +3,8 @@ from . import backend as K
 from .utils.generic_utils import get_from_module
 
 
-def softmax(x):
-    ndim = K.ndim(x)
-    if ndim == 2:
-        return K.softmax(x)
-    elif ndim == 3:
-        e = K.exp(x - K.max(x, axis=-1, keepdims=True))
-        s = K.sum(e, axis=-1, keepdims=True)
-        return e / s
-    else:
-        raise ValueError('Cannot apply softmax to a tensor '
-                         'that is not 2D or 3D. '
-                         'Here, ndim=' + str(ndim))
+def softmax(x, axis=-1):
+    return K.softmax(x, axis=axis)
 
 
 def log_softmax(x, axis=-1):

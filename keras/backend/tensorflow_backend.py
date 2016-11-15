@@ -1457,10 +1457,10 @@ def elu(x, alpha=1.):
         return tf.select(x > 0, res, alpha * res)
 
 
-def softmax(x):
+def softmax(x, axis=-1):
     '''Softmax of a tensor.
     '''
-    return tf.nn.softmax(x)
+    return tf.nn.softmax(x, dim=axis)
 
 
 def log_softmax(x, axis=-1):
