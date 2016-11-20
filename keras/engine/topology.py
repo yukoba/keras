@@ -911,6 +911,13 @@ class Layer(object):
                                 self.name + '.build(batch_input_shape)`.')
         return sum([K.count_params(p) for p in self.trainable_weights])
 
+    @property
+    def requires_batch_size(self):
+        '''Returns True if the layer needs the batch size.
+        For example, Recurrent(stateful=True) returns True.
+        '''
+        return False
+
 
 class InputLayer(Layer):
     '''Layer to be used as an entry point into a graph.
