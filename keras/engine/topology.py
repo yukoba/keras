@@ -799,7 +799,7 @@ class Layer(object):
                             'ill-defined for the layer. ' +
                             'Use `get_output_shape_at(node_index)` instead.')
 
-    def add_updates(self, updates, inputs):
+    def add_updates(self, updates, inputs=None):
         # Update self.updates
         if not hasattr(self, 'updates'):
             self.updates = []
@@ -807,15 +807,17 @@ class Layer(object):
             self.updates += updates
         except AttributeError:
             pass
-        # Update self._per_input_updates
-        if not hasattr(self, '_per_input_updates'):
-            self._per_input_updates = {}
-        inputs = to_list(inputs)
-        updates = to_list(updates)
-        inputs_hash = ', '.join([str(abs(id(x))) for x in inputs])
-        if inputs_hash not in self._per_input_updates:
-            self._per_input_updates[inputs_hash] = []
-        self._per_input_updates[inputs_hash] += updates
+
+        if inputs:
+            # Update self._per_input_updates
+            if not hasattr(self, '_per_input_updates'):
+                self._per_input_updates = {}
+            inputs = to_list(inputs)
+            updates = to_list(updates)
+            inputs_hash = ', '.join([str(abs(id(x))) for x in inputs])
+            if inputs_hash not in self._per_input_updates:
+                self._per_input_updates[inputs_hash] = []
+            self._per_input_updates[inputs_hash] += updates
 
     def get_updates_for(self, inputs):
         if not hasattr(self, '_per_input_updates'):
