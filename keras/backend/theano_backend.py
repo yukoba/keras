@@ -926,7 +926,7 @@ def rnn(step_function, inputs, initial_states,
             updates: The return value of theano.scan() updates.
                 Theano returns OrderedUpdates but it is converted to a Python list.
                 This must be passed to K.function() and K.eval().
-                If you are using inside a Layer, add this by Layer.add_updates().
+                If you are using inside a Layer, call Layer.add_rnn_updates().
                 TensorFlow always returns [].
     '''
     ndim = inputs.ndim

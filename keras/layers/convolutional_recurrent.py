@@ -169,7 +169,7 @@ class ConvRecurrent2D(Layer):
                                                       constants=constants,
                                                       unroll=unroll,
                                                       input_length=input_shape[1])
-        self.add_updates(updates)
+        self.add_rnn_updates(updates)
         if self.stateful:
             updates = []
             for i in range(len(states)):

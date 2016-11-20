@@ -117,7 +117,7 @@ class TimeDistributed(Wrapper):
                                            initial_states=[],
                                            input_length=input_shape[1],
                                            unroll=False)
-            self.add_updates(updates)
+            self.add_rnn_updates(updates)
             y = outputs
         else:
             # no batch size specified, therefore the layer will be able
