@@ -808,7 +808,7 @@ class Layer(object):
         except AttributeError:
             pass
 
-        if inputs:
+        if inputs is not None:
             # Update self._per_input_updates
             if not hasattr(self, '_per_input_updates'):
                 self._per_input_updates = {}

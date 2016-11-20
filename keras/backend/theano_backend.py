@@ -118,7 +118,7 @@ def eval(x, updates=None):
         A Numpy array.
     '''
     x = to_dense(x)
-    if updates:
+    if updates is not None:
         f = theano.function([], x, updates=updates)
         return f()
     else:
