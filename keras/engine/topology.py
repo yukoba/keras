@@ -1928,6 +1928,10 @@ class Container(Layer):
         return updates
 
     @property
+    def requires_batch_size(self):
+        return any(layer.requires_batch_size for layer in self.layers)
+
+    @property
     def stateful(self):
         return any([(hasattr(layer, 'stateful') and layer.stateful) for layer in self.layers])
 
