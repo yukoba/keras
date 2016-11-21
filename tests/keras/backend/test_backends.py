@@ -881,6 +881,24 @@ class TestBackend(object):
             assert k_s_d.shape == k_d.shape
             assert_allclose(k_s_d, k_d, atol=1e-05)
 
+    def test_resize_images(self):
+        val = np.random.random((3, 5, 6))
+        xth = KTH.variable(val)
+        xtf = KTF.variable(val)
+
+        KTH.resize_images(xth, 3, 4, dim_ordering='th')
+        KTF.resize_images(xtf, 3, 4, dim_ordering='tf')
+        assert_allclose(KTH.eval(xth), KTF.eval(xtf), atol=1e-05)
+
+    def test_resize_volumes(self):
+        val = np.random.random((3, 5, 6, 7))
+        xth = KTH.variable(val)
+        xtf = KTF.variable(val)
+
+        KTH.resize_volumes(xth, 3, 4, 3, dim_ordering='th')
+        KTF.resize_volumes(xtf, 3, 4, 3, dim_ordering='tf')
+        assert_allclose(KTH.eval(xth), KTF.eval(xtf), atol=1e-05)
+
 
 if __name__ == '__main__':
     pytest.main([__file__])
