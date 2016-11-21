@@ -14,7 +14,7 @@ def test_leaky_relu():
 def test_prelu():
     from keras.layers.advanced_activations import PReLU
     layer_test(PReLU, kwargs={},
-               input_shape=(2, 3, 4))
+               input_shape=(2, 3, 4, 5))
 
 
 @keras_test

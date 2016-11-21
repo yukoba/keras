@@ -39,7 +39,7 @@ class PReLU(Layer):
     '''Parametric Rectified Linear Unit:
     `f(x) = alphas * x for x < 0`,
     `f(x) = x for x >= 0`,
-    where `alphas` is a learned array with the same shape as x.
+    where `alphas` is a channel-wise learned array.
 
     # Input shape
         Arbitrary. Use the keyword argument `input_shape`
@@ -52,19 +52,38 @@ class PReLU(Layer):
     # Arguments
         init: initialization function for the weights.
         weights: initial weights, as a list of a single Numpy array.
+        axis: Parameter axis.
+            If this is None, 1 for K.image_dim_ordering() == "th" and 3 for K.image_dim_ordering() == "tf".
+            The default is None.
 
     # References
         - [Delving Deep into Rectifiers: Surpassing Human-Level Performance on ImageNet Classification](http://arxiv.org/pdf/1502.01852v1.pdf)
     '''
-    def __init__(self, init='zero', weights=None, **kwargs):
+    def __init__(self, init='zero', weights=None, axis=None, **kwargs):
         self.supports_masking = True
         self.init = initializations.get(init)
         self.initial_weights = weights
+
+        if axis is None:
+            if K.image_dim_ordering() == "th":
+                axis = 1
+            elif K.image_dim_ordering() == "tf":
+                axis = 3
+            else:
+                raise ValueError("Unkown image_dim_ordering")
+        self.axis = axis
+
         super(PReLU, self).__init__(**kwargs)
 
     def build(self, input_shape):
-        self.alphas = self.init(input_shape[1:],
+        self.alphas = self.init((input_shape[self.axis],),
                                 name='{}_alphas'.format(self.name))
+
+        for i in range(self.axis):
+            self.alphas = K.expand_dims(self.alphas, 0)
+        for i in range(self.axis + 1, len(input_shape)):
+            self.alphas = K.expand_dims(self.alphas, -1)
+
         self.trainable_weights = [self.alphas]
 
         if self.initial_weights is not None:
@@ -77,7 +96,9 @@ class PReLU(Layer):
         return pos + neg
 
     def get_config(self):
-        config = {'init': self.init.__name__}
+        config = {
+            'init': self.init.__name__,
+            'axis': self.axis}
         base_config = super(PReLU, self).get_config()
         return dict(list(base_config.items()) + list(config.items()))
 
